@@ -14,20 +14,22 @@ conference_day_reservation_id = 0
 workshop_enrollment_id = 0
 participant_id = 0
 workshop_id = 0
-conference_file = open('Conference.sql', 'w+')
-ConferenceDay_file = open('ConferenceDay.sql', 'w+')
-Workshop_file = open('Workshop.sql', 'w+')
-ConfernceDayReservation_file = open('ConfernceDayReservation.sql', 'w+')
-WorkshopEnrollment_file = open('WorkshopEnrollment.sql', 'w+')
-Participants_file = open('Participants.sql', 'w+')
-Price_file = open('Price.sql', 'w+')
-Payment_file = open('Payment.sql', 'w+')
-ConferenceDayReservation_file = open('ConferenceDayReservation.sql', 'w+')
-WorkshopParticipants_file = open('WorkshopParticipants.sql', 'w+')
+idir = 'data/'
+dir_ = 'Insert/'
+conference_file = open(dir_ + 'Conference.sql', 'w+')
+ConferenceDay_file = open(dir_ + 'ConferenceDay.sql', 'w+')
+Workshop_file = open(dir_ + 'Workshop.sql', 'w+')
+ConfernceDayReservation_file = open(dir_ + 'ConfernceDayReservation.sql', 'w+')
+WorkshopEnrollment_file = open(dir_ + 'WorkshopEnrollment.sql', 'w+')
+Participants_file = open(dir_ + 'Participants.sql', 'w+')
+Price_file = open(dir_ + 'Price.sql', 'w+')
+Payment_file = open(dir_ + 'Payment.sql', 'w+')
+ConferenceDayReservation_file = open(dir_ + 'ConferenceDayReservation.sql', 'w+')
+WorkshopParticipants_file = open(dir_ + 'WorkshopParticipants.sql', 'w+')
 
 
 def read_file():
-	return open("konferencje.csv").read().splitlines()
+	return open(idir + "konferencje.csv").read().splitlines()
 
 def get_decimals():
 	dis = []

@@ -5,8 +5,11 @@ import datetime
 bdate = datetime.date(2011, 4,5)
 customer_id = 0
 person_id = 0
-person_file = open('Person.sql', 'w+')
-customer_file = open('Customer.sql', 'w+')
+idir = 'data/'
+odir = 'Insert/'
+person_file = open(odir + 'Person.sql', 'w+')
+customer_file = open(odir + 'Customer.sql', 'w+')
+
 def prepare_script():
 	t = ['Person','Customer']
 	identity = 'set identity_insert [dbo].['
@@ -64,10 +67,10 @@ def create_corp_mails(companies, hosts, s):
 	return l
 
 def read_make_names():
-	male_firstnames = open("faceci_imiona.csv").read().splitlines()
-	male_surnames = open("faceci_nazwiska.csv").read().splitlines()
-	famale_firstnames = open("kobiety_imiona.csv").read().splitlines()
-	famale_surnames = open("kobiety_nazwiska.csv").read().splitlines()
+	male_firstnames = open(idir + "faceci_imiona.csv").read().splitlines()
+	male_surnames = open(idir + "faceci_nazwiska.csv").read().splitlines()
+	famale_firstnames = open(idir + "kobiety_imiona.csv").read().splitlines()
+	famale_surnames = open(idir + "kobiety_nazwiska.csv").read().splitlines()
 	male_data1 = create_names(male_firstnames, male_surnames, 10000)
 	famale_data1 = create_names(famale_firstnames, famale_surnames, 2000)
 	names = random.sample(male_data1, 5000) + random.sample(famale_data1, 1000)
@@ -154,7 +157,7 @@ def __main__():
 	prepare_script()
 	hosts = ['@gmail.com', '@outlook.com', '@live.com', '@yahoo.com', '@mail.com', '@inbox.com']
 	names = read_make_names()
-	companies = open('firmy.csv').read().splitlines()
+	companies = open(idir + 'firmy.csv').read().splitlines()
 	names = random.sample(names + names + names, 16000)
 	creator1 = create_mails(names, hosts)
 	creator2 = create_corp_mails(companies, hosts, creator1[1])
