@@ -73,10 +73,7 @@ def read_make_names():
 	famale_surnames = open(idir + "kobiety_nazwiska.csv").read().splitlines()
 	male_data1 = create_names(male_firstnames, male_surnames, 10000)
 	famale_data1 = create_names(famale_firstnames, famale_surnames, 2000)
-	names = random.sample(male_data1, 5000) + random.sample(famale_data1, 1000)
-	names += random.sample(names, 5000)
-	names += random.sample(names, 1000)
-	names += random.sample(names, 1000)
+	names = random.sample(male_data1, 35000) + random.sample(famale_data1, 5000)
 	return names
 
 def create_phones(data, nr):
@@ -153,12 +150,21 @@ def insert_person(data):
 			get_student(_id, doc_id, s_id)
 			s_id += 1
 
+def finish_script():
+	t = ['Person','Customer']
+	identity = 'set identity_insert [dbo].['
+	identity2 = '] off;'
+	print(identity + t[0] +identity2, file = person_file)
+	print(identity + t[1] +identity2, file = customer_file)
+
+
 def __main__():
 	prepare_script()
 	hosts = ['@gmail.com', '@outlook.com', '@live.com', '@yahoo.com', '@mail.com', '@inbox.com']
 	names = read_make_names()
+	print (len(names))
 	companies = open(idir + 'firmy.csv').read().splitlines()
-	names = random.sample(names + names + names, 16000)
+	names = random.sample(names, 16000)
 	creator1 = create_mails(names, hosts)
 	creator2 = create_corp_mails(companies, hosts, creator1[1])
 	Person = create_phones(creator1[0], 123456789)
@@ -173,5 +179,6 @@ def __main__():
 	insert_person(Person)
 	print ('--Person ' + str(len(Person)))
 	print ('--Customer' + str(len(Company) + len(Individual)))
+	finish_script()
 
 __main__()

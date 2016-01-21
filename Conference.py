@@ -19,7 +19,6 @@ dir_ = 'Insert/'
 conference_file = open(dir_ + 'Conference.sql', 'w+')
 ConferenceDay_file = open(dir_ + 'ConferenceDay.sql', 'w+')
 Workshop_file = open(dir_ + 'Workshop.sql', 'w+')
-ConfernceDayReservation_file = open(dir_ + 'ConfernceDayReservation.sql', 'w+')
 WorkshopEnrollment_file = open(dir_ + 'WorkshopEnrollment.sql', 'w+')
 Participants_file = open(dir_ + 'Participants.sql', 'w+')
 Price_file = open(dir_ + 'Price.sql', 'w+')
@@ -39,14 +38,14 @@ def get_decimals():
 	return dis
 
 def preapre_script():
-	t = ['Conference', 'ConferenceDay', 'Workshop', 'ConfernceDayReservation']
+	t = ['Conference', 'ConferenceDay', 'Workshop', 'ConferenceDayReservation']
 	t += ['WorkshopEnrollment', 'Participants']
 	id1 = 'set nocount on;\nset identity_insert [dbo].['
 	id2 = '] on;'
 	print(id1 + t[0] + id2, file = conference_file)
 	print(id1 + t[1] + id2, file = ConferenceDay_file)
 	print(id1 + t[2] + id2, file = Workshop_file)
-	print(id1 + t[3] + id2, file = ConfernceDayReservation_file)
+	print(id1 + t[3] + id2, file = ConferenceDayReservation_file)
 	print(id1 + t[4] + id2, file = WorkshopEnrollment_file)
 	print(id1 + t[5] + id2, file = Participants_file)
 	nocount = 'set nocount on;'
@@ -85,6 +84,20 @@ def __main__():
 		conf_id = index
 		create_days(conf_id, begin_date, duration, days, name)
 		days += duration
+	finish_script()
+
+def finish_script():
+	t = ['Conference', 'ConferenceDay', 'Workshop', 'ConferenceDayReservation']
+	t += ['WorkshopEnrollment', 'Participants']
+	id1 = 'set identity_insert [dbo].['
+	id2 = '] off;'
+	print(id1 + t[0] + id2, file = conference_file)
+	print(id1 + t[1] + id2, file = ConferenceDay_file)
+	print(id1 + t[2] + id2, file = Workshop_file)
+	print(id1 + t[3] + id2, file = ConferenceDayReservation_file)
+	print(id1 + t[4] + id2, file = WorkshopEnrollment_file)
+	print(id1 + t[5] + id2, file = Participants_file)
+
 
 def make_decimals(lista):
 	res = []
@@ -177,7 +190,7 @@ def create_payments(price, res_id, date):
 	query = 'INSERT INTO [dbo].[Payment] (PaymentValue, PaymentDay, ReservationID) \n\tVALUES ('
 	while (p > 0):
 		delta = datetime.timedelta(random.randint(1, 10))
-		value = random.randint(1,p)
+		value = random.randint(int(p/2),p)
 		p = p - value
 		p_val = decimal.Decimal(p)/100
 		val = str(p_val) + ' , '
@@ -209,14 +222,14 @@ def create_reservations(prices, enroll, limit, discount, day_date):
 	enrollment_args = []
 	users =[]
 	# Divide ConferenceDay for reservations
-	while l > low_limit:
-		r = random.randint(1,limit)
+	while l > (low_limit + 1):
+		r = random.randint(1,int(low_limit)-1)
 		l -= r
 		people += r
 		date = random.randint(3, 35)
 		date = day_date + datetime.timedelta((-1)*date)
 		reservations.append((r, date))
-	participants = random.sample(range(1,15001), people)
+	participants = random.sample(range(1,15000), people)
 	index = 0
 	for r in reservations:
 		_date = r[1]
@@ -235,7 +248,7 @@ def create_reservations(prices, enroll, limit, discount, day_date):
 		for s in res:
 			if s % 100 == 0:
 				students_count += 1
-		customer_id = random.randint(1, 471)
+		customer_id = random.randint(1, 470)
 		users += create_participants(res, reservation_id)
 		enrollment_args += [(reservation_id, r[0], users[1])]
 		price = students_count*(day_price*(1-discount))
@@ -300,8 +313,8 @@ def make_enrollment(reservation, enroll, discount):
 		for i in range(4):
 			workshop_enrollment_id += 1
 			we__id = workshop_enrollment_id
-			if(limits[i] > 0):
-				fulfillment = random.randint(1,limits[i])
+			if(limits[i] > 1):
+				fulfillment = random.randint(1,limits[i]-1)
 				limits[i] = limits[i] - fulfillment
 				sample = min(len(res[2]), fulfillment)
 				participants += random.sample(res[2], sample)
