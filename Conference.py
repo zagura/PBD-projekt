@@ -39,9 +39,9 @@ def get_decimals():
 	return dis
 
 def preapre_script():
-	t = ['Conference', 'ConfernceDay', 'Workshop', 'ConfernceDayReservation']
+	t = ['Conference', 'ConferenceDay', 'Workshop', 'ConfernceDayReservation']
 	t += ['WorkshopEnrollment', 'Participants']
-	id1 = 'set identity_insert [dbo].['
+	id1 = 'set nocount on;\nset identity_insert [dbo].['
 	id2 = '] on;'
 	print(id1 + t[0] + id2, file = conference_file)
 	print(id1 + t[1] + id2, file = ConferenceDay_file)
@@ -49,6 +49,10 @@ def preapre_script():
 	print(id1 + t[3] + id2, file = ConfernceDayReservation_file)
 	print(id1 + t[4] + id2, file = WorkshopEnrollment_file)
 	print(id1 + t[5] + id2, file = Participants_file)
+	nocount = 'set nocount on;'
+	print(nocount, file = WorkshopParticipants_file)
+	print(nocount, file = Payment_file)
+	print(nocount, file = Price_file)
 
 def __main__():
 	preapre_script()
@@ -157,7 +161,7 @@ def create_prices(day_id, date):
 	query = 'INSERT INTO [dbo].[Price] (BeginDate, EndDate, PriceValue, ConferenceDayID) \n\tVALUES ('
 	for i in range(4):
 		val = '\'' +  str(dates[i]) + '\' , '
-		val += '\'' + str(dates[i+1]) + '\' , '
+		val += '\'' + str(dates[i+1] - datetime.timedelta(days = 1)) + '\' , '
 		val += str(prices[i+index]) + ' , '
 		val += str(day_id) + ' )'
 		print (query + val, file = Price_file)
@@ -231,7 +235,7 @@ def create_reservations(prices, enroll, limit, discount, day_date):
 		for s in res:
 			if s % 100 == 0:
 				students_count += 1
-		customer_id = random.randint(1, 473)
+		customer_id = random.randint(1, 471)
 		users += create_participants(res, reservation_id)
 		enrollment_args += [(reservation_id, r[0], users[1])]
 		price = students_count*(day_price*(1-discount))
